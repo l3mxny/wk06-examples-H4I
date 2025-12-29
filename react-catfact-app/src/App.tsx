@@ -3,30 +3,39 @@ import "./App.css";
 
 // TODO: Create a CatFact interface for the API response body
 // (hint: If you forgot what it looks like, refer to the slides or use Postman)
+interface CatFact {
+  fact: string;
+  length: number;
+}
 
 function App() {
   const [fact, setFact] = useState<string>("");
   const [maxLength, setMaxLength] = useState<number>(25);
 
-  // TODO: Every function that uses await needs...
-  const getCatFact = () => {
+  // TODO: Every function that uses await needs... 
+  const getCatFact = async () => {
     try {
       // TODO: Change apiUrl to be the catfact website url,
       //       using a template literal (use ${} to insert JS)
       //       including a parameter to set max_length based on the
       //       maxLength state variable
-      const apiUrl = ``;
+      const apiUrl = `https://catfact.ninja/fact?max_length=${maxLength}`;
 
       // TODO: Use fetch to get a response from the API
       //       (Hint): You must use await, since fetch returns a promise
-      const response = null;
+      const response = await fetch(apiUrl);
 
       // TODO: Create a CatFact variable named data,
       //       use await and .json() to get the response body
-
+      const data: CatFact = await response.json();
       // TODO: Check if a fact was returned with data.fact,
       //           and if so, setFact(data.fact);
       //      else data.fact is null, so setFact("No fact found");
+      if (data.fact) {
+        setFact(data.fact);
+      } else {
+        setFact("No fact found");
+      }
 
       // TODO: Use setFact to change the fact state variable
       //       to data.fact
@@ -46,6 +55,11 @@ function App() {
   //    2) dependency array. 
 
   // Sorry,, did not take any time to make the app look pretty 😭😭😭
+  useEffect(() => {
+    document.title = fact.substring(0, 30);
+  }, [fact]);
+
+  
   return (
     <div>
       <h1>Cat Fact Generator</h1>
